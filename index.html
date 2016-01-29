@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Garmin Custom Widget</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script src="js/garmin-widget.js"></script>
+	<script>
+		var data = {
+			selector : '#container',
+			username : 'ejelicich',
+			data : 'activities'
+		}
+		$(document).ready(function(){
+			GarminWidget.init(data);	
+		})
+		
+	</script>
+</head>
+<body>
+<div id="container"></div>
+</body>
+</html>

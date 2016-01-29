@@ -1,15 +1,16 @@
-var GarminConnect = {
+var GarminWidget = {
 	LIMIT : 5,
 	ACTIVITIES_URL : 'http://connect.garmin.com/proxy/activitylist-service/activities/',
 	STATISTICS_URL : 'http://connect.garmin.com/proxy/userstats-service/statistics/previousDays/',
 	RECORDS_URL : 'http://connect.garmin.com/proxy/personalrecord-service/personalrecord/prs/',
 	DEFAULT_START: 1,
-	DEFAULT_LIMIT: 1,
+	DEFAULT_LIMIT: 5,
 
 	init : function(config){
 		if(this.validateConfig(config))
 		{
 			this.setConfig(config);
+			this.getData();
 		}	
 	},
 
@@ -22,11 +23,17 @@ var GarminConnect = {
 		}
 		else
 		{
+			//selector validation
+			if(typeof config.selector == 'undefined')
+			{
+				console.log('Error: element selector should be provided');
+				result = false;
+			}
 			//username validation
-			if(typeof config.username == undefined)
+			if(typeof config.username == 'undefined')
 			{
 				console.log('Error: username value should be provided');
-				result = 'false';
+				result = false;
 			}	
 
 			//data validation
@@ -73,37 +80,44 @@ var GarminConnect = {
 	},
 
 	setConfig : function(config){
+		this.selector = config.selector;
 		switch(config.data){
 			case 'activities':
-				var start = (typeof config.start == 'undefined') ? DEFAULT_START : config.start;
-				var limit = (typeof config.limit == 'undefined') ? DEFAULT_LIMIT : config.limit;
-				var url = ACTIVITIES_URL 
+				var start = (typeof config.start == 'undefined') ? this.DEFAULT_START : config.start;
+				var limit = (typeof config.limit == 'undefined') ? this.DEFAULT_LIMIT : config.limit;
+				this.url = this.ACTIVITIES_URL + config.username + '?start=' + start + '&limit=' + limit; 
 				break;
+			
+			case 'statistics' :
+				//TODO
+				break;
+
+			case 'records' :
+				//TODO
+				break;
+
 		} 
 	},
 
 	getData : function(){
 		var t = this;
 		$.ajax({
-			//method: 'POST',
-			type: 'POST',
-			url: 'php/getGarminData.php',
-			data:{
-				username : 'ejelicich',
-				limit : this.LIMIT
+			method: 'POST',
+			url: 'service/garminConnectService.php',
+			data: {
+				url: this.url,
 			},
-			
 			success: function(data) {
-				//console.log('data',data);
+				//console.log('data : ',data);
 				var json = JSON.parse(data);
-				var html = t.printHTML(json);
+				t.printHTML(json);
 	    	}
 
 	    });		
 	},
 
 	printHTML : function(json){
-		console.log(json);
+		//console.log(json);
 
     	$ul = $('<ul>').attr('id','garmin-custom-widget');
 
@@ -133,6 +147,6 @@ var GarminConnect = {
 			$ul.append(html);
     	}
 
-    	$('#widget-wrapper').append($ul);
+    	$(this.selector).append($ul);
 	}
 }
