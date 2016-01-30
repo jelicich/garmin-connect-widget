@@ -5,14 +5,21 @@ This widget uses the free Garmin Connect Web API to load your statistics, activi
 
 # Usage
 To initialize the widget use the method:
+``` javascript
 GarminWidget.init();
+```
+
 
 An object should be given to set the configuration
+``` javascript
 var obj = {
       selector : '#container2',
 			username : 'ejelicich',
 			data : 'activities',
 			limit: 1
     }
+
+GarminWidget.init(obj);
+```
 
 in progress..
