@@ -1,3 +1,13 @@
+ /*
+ Garmin Widget
+ Version: 1.0
+  Author: Esteban Jelicich
+ Website: https://github.com/jelicich/garmin-connect-widget
+    Docs: -
+    Repo: -
+  Issues: -
+*/
+
 var GarminWidget = {
 	LIMIT : 5,
 	ACTIVITIES_URL : 'http://connect.garmin.com/proxy/activitylist-service/activities/',
@@ -50,7 +60,7 @@ var GarminWidget = {
 							result = false;
 						}
 						break;
-					
+
 					case 'statistics' : 
 						if(config.period != 'monthly' || config.period != 'yearly')
 						{
@@ -67,11 +77,26 @@ var GarminWidget = {
 						console.log('Error: wrong data value');
 						result = false;
 				}
+
+				//slider option validation
+				if(typeof config.display != 'undefined')
+				{
+					switch(config.display)
+					{
+						case 'list' :
+							break;
+						case 'slider':
+							break;
+						default : 
+							console.log('Error: wrong display value');
+							result = false;
+					}
+				}
 			}
 			else
 			{
 				console.log('Error: data value should be provided');
-				result = false
+				result = false;
 			}
 
 		}
@@ -85,7 +110,7 @@ var GarminWidget = {
 			case 'activities':
 				var start = (typeof config.start == 'undefined') ? this.DEFAULT_START : config.start;
 				var limit = (typeof config.limit == 'undefined') ? this.DEFAULT_LIMIT : config.limit;
-				this.url = this.ACTIVITIES_URL + config.username + '?start=' + start + '&limit=' + limit; 
+				this.url = this.ACTIVITIES_URL + config.username + '?start=' + start + '&limit=' + limit;
 				break;
 			
 			case 'statistics' :
@@ -95,8 +120,16 @@ var GarminWidget = {
 			case 'records' :
 				//TODO
 				break;
-
 		} 
+		//slider config
+		if(config.display == 'slider')
+		{
+			this.isSlider = true;
+		}
+		else
+		{
+			this.isSlider = false;
+		}
 	},
 
 	getData : function(){
@@ -112,14 +145,13 @@ var GarminWidget = {
 				var json = JSON.parse(data);
 				t.printHTML(json);
 	    	}
-
 	    });		
 	},
 
 	printHTML : function(json){
 		//console.log(json);
 
-    	$ul = $('<ul>').attr('id','garmin-custom-widget');
+    	$ul = $('<ul>').attr('id','garmin-widget');
 
     	for(var i = 0; i < json.activityList.length; i++)
     	{
@@ -148,5 +180,23 @@ var GarminWidget = {
     	}
 
     	$(this.selector).append($ul);
+
+    	if(this.isSlider)
+    	{
+    		this.slider();
+    	}
+
+	},
+
+	slider : function(){
+		var $gw = $('#garmin-widget');
+		$gw.addClass('clearfix');
+		$gw.css('overflow', 'hidden')
+			.css('position','relative');
+		
+		var $li = $gw.children();
+		$li.css('float','left')
+			.css('width','200px');
+		
 	}
 }
