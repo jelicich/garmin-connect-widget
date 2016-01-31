@@ -83,3 +83,24 @@
 	font-size: 16px;
 	color: #000;
 }
+
+/* Slider */
+#garmin-widget-wrapper #slider-btn{
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	text-align: center;
+	border: 1px solid rgba(255,255,255,0.5);
+	color: rgba(255,255,255,0.5);
+	background: rgba(255,255,255,0.2);
+	width: 20px;
+	height: 20px;
+	border-radius: 10px;
+	cursor: pointer;
+}
+
+#garmin-widget-wrapper #slider-btn:hover{
+	border: 1px solid rgba(255,255,255,0.7);
+	color: rgba(255,255,255,0.7);
+	background: rgba(255,255,255,0.34);
+}

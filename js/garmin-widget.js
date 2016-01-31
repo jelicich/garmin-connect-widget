@@ -5,13 +5,13 @@
  Website: https://github.com/jelicich/garmin-connect-widget
     Docs: -
     Repo: -
-  Issues: -
+  Issues: -	
 */
 
 var GarminWidget = {
 	LIMIT : 5,
 	ACTIVITIES_URL : 'http://connect.garmin.com/proxy/activitylist-service/activities/',
-	STATISTICS_URL : 'http://connect.garmin.com/proxy/userstats-service/statistics/previousDays/',
+	STATISTICS_URL : 'http://connect.garmin.com/proxy/userstats-service/statistics/',
 	RECORDS_URL : 'http://connect.garmin.com/proxy/personalrecord-service/personalrecord/prs/',
 	DEFAULT_START: 1,
 	DEFAULT_LIMIT: 5,
@@ -62,10 +62,18 @@ var GarminWidget = {
 						break;
 
 					case 'statistics' : 
-						if(config.period != 'monthly' || config.period != 'yearly')
+						if(typeof config.period != 'undefined')
 						{
-							console.log('Error: a valid period should be provided. "monthly" or "yearly"');
-							result = false;
+							switch(config.period)
+							{
+								case 'monthly' :
+									break;
+								case 'yearly':
+									break;
+								default : 
+									console.log('Error: a valid period should be provided. "monthly" or "yearly"');
+									result = false;
+							}
 						}
 						break;
 
@@ -106,6 +114,7 @@ var GarminWidget = {
 
 	setConfig : function(config){
 		this.selector = config.selector;
+		this.data = config.data;
 		switch(config.data){
 			case 'activities':
 				var start = (typeof config.start == 'undefined') ? this.DEFAULT_START : config.start;
@@ -114,7 +123,25 @@ var GarminWidget = {
 				break;
 			
 			case 'statistics' :
-				//TODO
+				var period;
+				var group;
+				if(config.period == 'yearly')
+				{
+					period = 'previousDays/';
+				}
+				else
+				{
+					period = 'monthly/';
+				}
+				if(config.group)
+				{
+					group = '?ByParentType=true';
+				}
+				else
+				{
+					group = '?ByParentType=false';
+				}
+				this.url = this.STATISTICS_URL + period + config.username + group;
 				break;
 
 			case 'records' :
@@ -151,52 +178,124 @@ var GarminWidget = {
 	printHTML : function(json){
 		//console.log(json);
 
+		$wrapper = $('<div>').attr('id','garmin-widget-wrapper');
     	$ul = $('<ul>').attr('id','garmin-widget');
+    	$wrapper.append($ul);
 
-    	for(var i = 0; i < json.activityList.length; i++)
+    	switch(this.data)
     	{
-    		var name = json.activityList[i].activityName;
-			var type = json.activityList[i].activityType.typeKey; 
-			var date = json.activityList[i].startTimeLocal;
-			var pic = json.activityList[i].ownerProfileImageUrlSmall;
-			var distance = json.activityList[i].distance;
-			var distanceKM = (distance / 1000).toFixed(2)
-			var time = parseInt(json.activityList[i].duration);
-			
-			var timeHMS = new Date(null);
-        	timeHMS.setSeconds(time);
-        	timeHMS = timeHMS.toISOString().substr(11, 8);
-			
-			var pace = (time / distanceKM).toFixed(2);
-			var paceMS = new Date(null);
-			paceMS.setSeconds(pace);
-        	paceMS = paceMS.toISOString().substr(14, 5);
+    		case 'activities' :
+    			for(var i = 0; i < json.activityList.length; i++)
+		    	{
+		    		var name = json.activityList[i].activityName;
+					var type = json.activityList[i].activityType.typeKey; 
+					var date = json.activityList[i].startTimeLocal;
+					var pic = json.activityList[i].ownerProfileImageUrlSmall;
+					var distance = json.activityList[i].distance;
+					var distanceKM = (distance / 1000).toFixed(2)
+					var time = parseInt(json.activityList[i].duration);
+					
+					var timeHMS = new Date(null);
+		        	timeHMS.setSeconds(time);
+		        	timeHMS = timeHMS.toISOString().substr(11, 8);
+					
+					var pace = (time / distanceKM).toFixed(2);
+					var paceMS = new Date(null);
+					paceMS.setSeconds(pace);
+		        	paceMS = paceMS.toISOString().substr(14, 5);
 
-        	var calories = parseInt(json.activityList[i].calories);
+		        	var calories = parseInt(json.activityList[i].calories);
 
-    		var html = '<li class="activity-container"><div class="title-container"><h2>' + name + '</h2><h3>' + type + ' | ' + date + '</h3></div><ul class="activity-details clearfix"><li><dl><dt>Distance</dt><dd>' + distanceKM + ' km</dd></dt></li><li><dl><dt>Time</dt><dd>' + timeHMS + '</dd></dl></li><li><dl><dt>Avg Pace</dt><dd>' + paceMS + '</dd></dl></li><li><dl><dt>Calories</dt><dd>' + calories + '</dd></dl></li></ul></li>';
+		    		var html = '<li class="activity-container"><div class="title-container"><h2>' + name + '</h2><h3>' + type + ' | ' + date + '</h3></div><ul class="activity-details clearfix"><li><dl><dt>Distance</dt><dd>' + distanceKM + ' km</dd></dt></li><li><dl><dt>Time</dt><dd>' + timeHMS + '</dd></dl></li><li><dl><dt>Avg Pace</dt><dd>' + paceMS + '</dd></dl></li><li><dl><dt>Calories</dt><dd>' + calories + '</dd></dl></li></ul></li>';
+		    		$ul.append(html);
+		    	}
+    			break;
 
-			$ul.append(html);
+    		case 'statistics' :
+    			for(var i = 0; i < json.userMetrics.length; i++)
+    			{
+    				var period = (json.userMetrics[i].month) ? json.userMetrics[i].month : 'Last 365 days';
+    				var activityType = (json.userMetrics[i].activityType.typeKey == 'all') ? 'all activities' : json.userMetrics[i].activityType.typeKey;
+    				var totalActivities = json.userMetrics[i].totalActivities;
+    				var totalDistance = json.userMetrics[i].totalDistance;
+    				var totalDistanceKM = (totalDistance / 1000).toFixed(2);
+    				
+    				var totalDuration = parseInt(json.userMetrics[i].totalDuration);
+    				var timeHMS = new Date(null);
+		        	timeHMS.setSeconds(totalDuration);
+		        	timeHMS = timeHMS.toISOString().substr(11, 8);
+    				
+    				var totalCalories = parseInt(json.userMetrics[i].totalCalories / 4.2); //total calories are shown in joules
+
+    				var html = '<li class="activity-container"><div class="title-container"><h2>' + period + '</h2><h3>' + activityType + '</h3></div><ul class="activity-details clearfix"><li><dl><dt>Activities</dt><dd>' + totalActivities + '</dd></dt></li><li><dl><dt>Distance</dt><dd>' + totalDistanceKM + ' km</dd></dt></li><li><dl><dt>Time</dt><dd>' + timeHMS + '</dd></dl></li><li><dl><dt>Calories</dt><dd>' + totalCalories + '</dd></dl></li></ul></li>';
+    				$ul.append(html);
+    			} 
+    			break;
     	}
+    	
+    	
 
-    	$(this.selector).append($ul);
+    	$(this.selector).append($wrapper);
 
     	if(this.isSlider)
     	{
-    		this.slider();
+    		this.setSlider();
     	}
 
 	},
 
-	slider : function(){
+	setSlider : function(){
+		var $wrapper = $('#garmin-widget-wrapper');
+		$wrapper.css('position','relative');
+
+		var $btn = $('<button>');
+		$btn.html('>');
+		$btn.attr('id','slider-btn');
+		$btn.click(slide);
+		$wrapper.append($btn);
+
 		var $gw = $('#garmin-widget');
 		$gw.addClass('clearfix');
-		$gw.css('overflow', 'hidden')
-			.css('position','relative');
-		
+
 		var $li = $gw.children();
-		$li.css('float','left')
-			.css('width','200px');
+		var liHeight = $($li[0]).height() + 'px';
+		$gw.css('overflow', 'hidden')
+			.css('position','relative')
+			.css('height', liHeight);
+		
+		$li.css('position','absolute')
+			.css('width','100%');
+
+		for(var i = 0; i < $li.length; i++)
+		{
+			var $currentLi = $($li[i]);
+			if(i > 0)
+			{
+				var $previousLi = $($li[i-1]);
+				$currentLi.css('display', 'none');
+			}
+		}
+
+		var counter = 0;
+		function slide(){
+			if(counter == $li.length - 1)
+			{
+				$currentLi = $($li[counter]);
+				$nextLi = $($li[0]);
+				$currentLi.fadeOut();
+				$nextLi.fadeIn();
+				counter = 0;
+			}
+			else
+			{
+				$currentLi = $($li[counter]);
+				$nextLi = $($li[counter+1]);
+				$currentLi.fadeOut();
+				$nextLi.fadeIn();
+				counter++;
+			}
+			
+		}
 		
 	}
 }
