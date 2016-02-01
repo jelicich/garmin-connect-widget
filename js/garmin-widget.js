@@ -106,9 +106,7 @@ var GarminWidget = {
 				console.log('Error: data value should be provided');
 				result = false;
 			}
-
 		}
-
 		return result;
 	},
 
@@ -123,29 +121,13 @@ var GarminWidget = {
 				break;
 			
 			case 'statistics' :
-				var period;
-				var group;
-				if(config.period == 'yearly')
-				{
-					period = 'previousDays/';
-				}
-				else
-				{
-					period = 'monthly/';
-				}
-				if(config.group)
-				{
-					group = '?ByParentType=true';
-				}
-				else
-				{
-					group = '?ByParentType=false';
-				}
+				var period = (config.period == 'yearly') ? 'previousDays/' : 'monthly/';
+				var group = (config.group) ? '?ByParentType=true' : '?ByParentType=false';
 				this.url = this.STATISTICS_URL + period + config.username + group;
 				break;
 
 			case 'records' :
-				//TODO
+				this.url = this.RECORDS_URL + config.username;
 				break;
 		} 
 		//slider config
@@ -206,7 +188,7 @@ var GarminWidget = {
 
 		        	var calories = parseInt(json.activityList[i].calories);
 
-		    		var html = '<li class="activity-container"><div class="title-container"><h2>' + name + '</h2><h3>' + type + ' | ' + date + '</h3></div><ul class="activity-details clearfix"><li><dl><dt>Distance</dt><dd>' + distanceKM + ' km</dd></dt></li><li><dl><dt>Time</dt><dd>' + timeHMS + '</dd></dl></li><li><dl><dt>Avg Pace</dt><dd>' + paceMS + '</dd></dl></li><li><dl><dt>Calories</dt><dd>' + calories + '</dd></dl></li></ul></li>';
+		    		var html = '<li class="activity-container"><div class="title-container"><h2>' + name + '</h2><h3>' + type + ' | ' + date + '</h3></div><ul class="activity-details clearfix"><li><dl><dt>Distance</dt><dd>' + distanceKM + ' km</dd></dl></li><li><dl><dt>Time</dt><dd>' + timeHMS + '</dd></dl></li><li><dl><dt>Avg Pace</dt><dd>' + paceMS + '</dd></dl></li><li><dl><dt>Calories</dt><dd>' + calories + '</dd></dl></li></ul></li>';
 		    		$ul.append(html);
 		    	}
     			break;
@@ -227,14 +209,97 @@ var GarminWidget = {
     				
     				var totalCalories = parseInt(json.userMetrics[i].totalCalories / 4.2); //total calories are shown in joules
 
-    				var html = '<li class="activity-container"><div class="title-container"><h2>' + period + '</h2><h3>' + activityType + '</h3></div><ul class="activity-details clearfix"><li><dl><dt>Activities</dt><dd>' + totalActivities + '</dd></dt></li><li><dl><dt>Distance</dt><dd>' + totalDistanceKM + ' km</dd></dt></li><li><dl><dt>Time</dt><dd>' + timeHMS + '</dd></dl></li><li><dl><dt>Calories</dt><dd>' + totalCalories + '</dd></dl></li></ul></li>';
+    				var html = '<li class="activity-container"><div class="title-container"><h2>' + period + '</h2><h3>' + activityType + '</h3></div><ul class="activity-details clearfix"><li><dl><dt>Activities</dt><dd>' + totalActivities + '</dd></dl></li><li><dl><dt>Distance</dt><dd>' + totalDistanceKM + ' km</dd></dl></li><li><dl><dt>Time</dt><dd>' + timeHMS + '</dd></dl></li><li><dl><dt>Calories</dt><dd>' + totalCalories + '</dd></dl></li></ul></li>';
     				$ul.append(html);
     			} 
     			break;
+
+    		case 'records' :
+    			var RECORD_1KM = 1;
+    			var RECORD_1MI = 2
+    			var RECORD_5KM = 3;
+    			var RECORD_10KM = 4;
+    			var RECORD_21KM = 5;
+    			var RECORD_42KM = 6;
+    			var RECORD_FARTHEST = 7;
+
+    			function sortRecords(a,b){
+				    return a.typeId > b.typeId ? 1 : -1;
+    			}
+
+    			json = json.sort(sortRecords);
+
+    			var $li = $('<li>').addClass('activity-container');
+    			$li.html('<div class="title-container"><h2>Personal Records</h2></div>');
+    			var $ulChild = $('<ul>').addClass('activity-details').addClass('clearfix');
+    			$li.append($ulChild);
+    			
+    			for(var i = 0; i < json.length; i++)
+    			{
+    				var record_title;
+    				var record_value;
+    				var currentRecord = json[i];
+    				switch(currentRecord.typeId)
+    				{
+    					case RECORD_1KM : 
+    						record_title = '1 km';
+    						record_value = parseTime(json[i].value);
+    						break;
+
+    					case RECORD_1MI :
+    						record_title = '1 mi';
+    						record_value = parseTime(json[i].value);
+    						break;
+
+    					case RECORD_5KM :
+    						record_title = '5 km';
+    						record_value = parseTime(json[i].value);
+    						break
+
+    					case RECORD_10KM : 
+    						record_title = '10 km';
+    						record_value = parseTime(json[i].value, true);
+    						break;
+
+    					case RECORD_21KM :
+    						record_title = 'Half-marathon';
+    						record_value = parseTime(json[i].value, true);
+    						break;
+
+    					case RECORD_42KM :
+    						record_title = 'Marathon';
+    						record_value = parseTime(json[i].value, true);
+    						break;
+
+    					case RECORD_FARTHEST :
+    						record_title = 'Farthest';
+    						record_value = (json[i].value / 1000).toFixed(2) + ' km';
+    						break;
+
+    					default :
+    						//TODO other other activities ID title
+    						record_title = 'Unknown Record';
+    						record_value = json[i].value.toFixed(2);
+
+    				}
+    				var html = '<li><dl><dt>'+ record_title +'</dt><dd>' + record_value + '</dd></dl></li>';
+    				$ulChild.append(html);
+    			}
+
+    			$ul.append($li);
+
+    			function parseTime(seconds,hours){
+    				var start = (hours) ? 11 : 14;
+    				var length = (hours) ? 8 : 5;
+					var timeHMS = new Date(null);
+		        	timeHMS.setSeconds(seconds);
+		        	time = timeHMS.toISOString().substr(start, length);
+		        	return time;
+    			}
+
+    			break;
     	}
     	
-    	
-
     	$(this.selector).append($wrapper);
 
     	if(this.isSlider)
@@ -247,12 +312,6 @@ var GarminWidget = {
 	setSlider : function(){
 		var $wrapper = $('#garmin-widget-wrapper');
 		$wrapper.css('position','relative');
-
-		var $btn = $('<button>');
-		$btn.html('>');
-		$btn.attr('id','slider-btn');
-		$btn.click(slide);
-		$wrapper.append($btn);
 
 		var $gw = $('#garmin-widget');
 		$gw.addClass('clearfix');
@@ -276,6 +335,15 @@ var GarminWidget = {
 			}
 		}
 
+		if($li.length > 1)
+		{
+			var $btn = $('<button>');
+			$btn.html('>');
+			$btn.attr('id','slider-btn');
+			$btn.click(slide);
+			$wrapper.append($btn);
+		}
+
 		var counter = 0;
 		function slide(){
 			if(counter == $li.length - 1)
@@ -293,9 +361,7 @@ var GarminWidget = {
 				$currentLi.fadeOut();
 				$nextLi.fadeIn();
 				counter++;
-			}
-			
+			}	
 		}
-		
 	}
 }
