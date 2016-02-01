@@ -19,14 +19,19 @@ var obj = {
 	selector : '#container',
 	username : 'ejelicich',
 	data : 'activities',
+	display : 'slider',
 	start : 1,
-	limit: 3
+	limit : 3
 }
 
 GarminWidget.init(obj);
 ```
-`start` and `limit` values are not mandatory. If not set, their value will be "1" and "5" respectively.
-in progress..
+`display`, `start` and `limit` values are not mandatory. If not set, their value will be "list", "1" and "5" respectively.
+
+| Property               | Values             |
+|------------------------|--------------------|
+| `display`              | "slider", "list"   |
+
 
 ### Showing Statistics
 To show the statistics the object should be built like the following one:
@@ -36,7 +41,8 @@ var obj = {
 	username : 'ejelicich',
 	data : 'statistics',
 	period : 'yearly',
-	group: true
+	display : 'list',
+	group : true
 }
 
 GarminWidget.init(obj);
@@ -45,7 +51,8 @@ GarminWidget.init(obj);
 
 | Property               | Values             |
 |------------------------|--------------------|
-| `period`               | `monthly`, `yearly`|
+| `display`              | "slider", "list"   |
+| `period`               | "monthly", "yearly"|
 | `group`                | `true`, `false`    |
 
 ### Showing Personal Records
