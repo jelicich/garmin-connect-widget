@@ -215,78 +215,130 @@ var GarminWidget = {
     			break;
 
     		case 'records' :
-    			var RECORD_1KM = 1;
-    			var RECORD_1MI = 2
-    			var RECORD_5KM = 3;
-    			var RECORD_10KM = 4;
-    			var RECORD_21KM = 5;
-    			var RECORD_42KM = 6;
-    			var RECORD_FARTHEST = 7;
+    			//1 to 7 running
+    			var R_RECORD_1KM = 1;
+    			var R_RECORD_1MI = 2
+    			var R_RECORD_5KM = 3;
+    			var R_RECORD_10KM = 4;
+    			var R_RECORD_21KM = 5;
+    			var R_RECORD_42KM = 6;
+    			var R_RECORD_FARTHEST = 7;
+
+    			//8 to 11 cycling
+    			var C_RECORD_FARTHEST = 8;
+    			var C_RECORD_ELEVATION = 9;
+    			var C_RECORD_MAX_AVG_POWER = 10;
+				var C_RECORD_40KM = 11;
 
     			function sortRecords(a,b){
 				    return a.typeId > b.typeId ? 1 : -1;
     			}
 
     			json = json.sort(sortRecords);
+    			var records = {};
 
-    			var $li = $('<li>').addClass('activity-container');
-    			$li.html('<div class="title-container"><h2>Personal Records</h2></div>');
-    			var $ulChild = $('<ul>').addClass('activity-details').addClass('clearfix');
-    			$li.append($ulChild);
+    			// var $li = $('<li>').addClass('activity-container');
+    			// $li.html('<div class="title-container"><h2>Personal Records</h2></div>');
+    			// var $ulChild = $('<ul>').addClass('activity-details').addClass('clearfix');
+    			// $li.append($ulChild);
     			
+
+    			var isHeaderR = false;
+    			var isHeaderC = false;
     			for(var i = 0; i < json.length; i++)
     			{
-    				var record_title;
-    				var record_value;
     				var currentRecord = json[i];
+					var record_title;
+    				var record_value;
+
+    				//XX
+    				if(currentRecord.typeId >= 1 && currentRecord.typeId <= 7 && !isHeaderR)
+    				{
+    					var $li = $('<li>').addClass('activity-container');
+		    			$li.append('<div class="title-container"><h2>Personal Records</h2><h3>running</h3></div>');
+		    			var $ulChild = $('<ul>').addClass('activity-details').addClass('clearfix');
+		    			$li.append($ulChild);
+
+		    			$ul.append($li);
+
+		    			isHeaderR = true;
+
+    				}
+    				if(currentRecord.typeId >= 8 && currentRecord.typeId <= 11 && !isHeaderC)
+    				{
+    					var $li = $('<li>').addClass('activity-container');
+		    			$li.append('<div class="title-container"><h2>Personal Records</h2><h3>cycling</h3></div>');
+		    			var $ulChild = $('<ul>').addClass('activity-details').addClass('clearfix');
+		    			$li.append($ulChild);
+
+		    			$ul.append($li);
+
+		    			isHeaderC = true;
+    				}
+    				
     				switch(currentRecord.typeId)
     				{
-    					case RECORD_1KM : 
+    					case R_RECORD_1KM : 
     						record_title = '1 km';
-    						record_value = parseTime(json[i].value);
+    						record_value = parseTime(currentRecord.value);
     						break;
 
-    					case RECORD_1MI :
+    					case R_RECORD_1MI :
     						record_title = '1 mi';
-    						record_value = parseTime(json[i].value);
+    						record_value = parseTime(currentRecord.value);
     						break;
 
-    					case RECORD_5KM :
+    					case R_RECORD_5KM :
     						record_title = '5 km';
-    						record_value = parseTime(json[i].value);
+    						record_value = parseTime(currentRecord.value);
     						break
 
-    					case RECORD_10KM : 
+    					case R_RECORD_10KM : 
     						record_title = '10 km';
-    						record_value = parseTime(json[i].value, true);
+    						record_value = parseTime(currentRecord.value, true);
     						break;
 
-    					case RECORD_21KM :
+    					case R_RECORD_21KM :
     						record_title = 'Half-marathon';
-    						record_value = parseTime(json[i].value, true);
+    						record_value = parseTime(currentRecord.value, true);
     						break;
 
-    					case RECORD_42KM :
+    					case R_RECORD_42KM :
     						record_title = 'Marathon';
-    						record_value = parseTime(json[i].value, true);
+    						record_value = parseTime(currentRecord.value, true);
     						break;
 
-    					case RECORD_FARTHEST :
+    					case R_RECORD_FARTHEST || C_RECORD_FARTHEST :
     						record_title = 'Farthest';
-    						record_value = (json[i].value / 1000).toFixed(2) + ' km';
+    						record_value = (currentRecord.value / 1000).toFixed(2) + ' km';
+    						break;
+
+    					case C_RECORD_ELEVATION : 
+    						record_title = 'Elevation Gain';
+    						record_value = currentRecord.value.toFixed(2) + ' m';
+    						break;
+
+    					case C_RECORD_MAX_AVG_POWER : 
+    						record_title = 'Max Avg Power';
+    						record_value = currentRecord.value;
+    						break;
+
+    					case C_RECORD_40KM : 
+    						record_title = 'Max Avg Power';
+    						record_value = parseTime(currentRecord.value, true);;
     						break;
 
     					default :
     						//TODO other other activities ID title
     						record_title = 'Unknown Record';
-    						record_value = json[i].value.toFixed(2);
+    						record_value = currentRecord.value.toFixed(2);
 
     				}
     				var html = '<li><dl><dt>'+ record_title +'</dt><dd>' + record_value + '</dd></dl></li>';
     				$ulChild.append(html);
     			}
 
-    			$ul.append($li);
+    			//$ul.append($li);
 
     			function parseTime(seconds,hours){
     				var start = (hours) ? 11 : 14;

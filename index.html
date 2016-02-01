@@ -4,22 +4,52 @@
 	<title>Garmin Custom Widget</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 	<script src="js/garmin-widget.js"></script>
+	<script src="js/garmin-widget-2.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/garmin-widget.css"/>
 	<script>
-		var data = {
+		var data1 = {
+			username : 'ejelicich',
+			data : 'activities',
+			start : 1,
+			limit : 5,
+			display : 'slider'
+		}
+
+		var data2 = {
+			username : 'ejelicich',
+			data : 'statistics',
+			display : 'slider'
+		}
+
+		var data3 = {
 			selector : '#container',
 			username : 'ejelicich',
-			data : 'records'
+			data : 'records',
+			display : 'slider'
 		}
 		
 		$(document).ready(function(){
-			GarminWidget.init(data);	
+			//GarminWidget.init(data);	
+
+		
+			$('#container1').garminWidget(data1); 
+
+			$('#container2').garminWidget(data2); 
+
+			$('#container3').garminWidget(data3); 
+
 		})
 		
 	</script>
 </head>
 <body>
 <div id="container"></div>
+
+<div id="container1"></div>
+
+<div id="container2"></div>
+
+<div id="container3"></div>
 
 </body>
 </html>
