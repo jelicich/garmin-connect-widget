@@ -1,22 +1,21 @@
 # Garmin Connect Widget
-A simple widget to load data from your Garmin profile using the web services provided by Garmin Connect
+A jQuery plugin to load data from your Garmin profile using the web services provided by Garmin Connect
 
-This widget uses the free Garmin Connect Web API to load your statistics, activities and personal records into your own website. The data is retrieved using a custom web service through an ajax call.
+This plugin uses the free Garmin Connect Web API to load your statistics, activities and personal records into your own website. The data is retrieved using a custom web service through an ajax call.
 
 It is important that your Garmin Connect profile privacy is set to public, otherwise the information won't be available.
 
 # Usage
 To initialize the widget use the method:
 ``` javascript
-GarminWidget.init();
+$('#container).garminWidget();
 ```
 An object should be given to set the configuration, see the following examples:
 
 ### Showing Activities
 To show the activities the object should be built like the following one:
 ``` javascript
-var obj = {
-	selector : '#container',
+var conf = {
 	username : 'ejelicich',
 	data : 'activities',
 	display : 'slider',
@@ -24,12 +23,11 @@ var obj = {
 	limit : 3
 }
 
-GarminWidget.init(obj);
+$('#container).garminWidget(conf);
 ```
 
 | Property               | Values                                 | Description                                                                                        |
 |------------------------|----------------------------------------|----------------------------------------------------------------------------------------------------|
-| `selector`             | selector                               | Required. HTML selector where the plugin will be shown.                                            |
 | `username`             | username                               | Required. Garmin Connect username (Should be a public profile).                                    |
 | `data`                 | "activities", "statistics", "records"  | Required. The information to be shown.                        .                                    |
 | `display`              | "slider", "list"                       | Optional. Set the way the activities are shown. If omitted, default value is "list".               |
@@ -40,8 +38,7 @@ GarminWidget.init(obj);
 ### Showing Statistics
 To show the statistics the object should be built like the following one:
 ``` javascript
-var obj = {
-	selector : '#container',
+var conf = {
 	username : 'ejelicich',
 	data : 'statistics',
 	period : 'yearly',
@@ -49,12 +46,11 @@ var obj = {
 	group : true
 }
 
-GarminWidget.init(obj);
+$('#container).garminWidget(conf);
 ```
 
 | Property               | Values                                 | Description                                                                                        |
 |------------------------|----------------------------------------|----------------------------------------------------------------------------------------------------|
-| `selector`             | selector                               | Required. HTML selector where the plugin will be shown.                                            |
 | `username`             | username                               | Required. Garmin Connect username (Should be a public profile).                                    |
 | `data`                 | "activities", "statistics", "records"  | Required. The information to be shown.                                                             |
 | `display`              | "slider", "list"                       | Optional. Set the way the activities are shown. If omitted, default value is "list".               |
@@ -65,13 +61,12 @@ GarminWidget.init(obj);
 ### Showing Personal Records
 To show the personal records the object should be built like the following one:
 ``` javascript
-var obj = {
-	selector : '#container',
+var conf = {
 	username : 'ejelicich',
 	data : 'records'
 }
 
-GarminWidget.init(obj);
+$('#container).garminWidget(conf);
 ```
 
 | Property               | Values                                 | Description                                                                                        |
@@ -79,4 +74,4 @@ GarminWidget.init(obj);
 | `selector`             | selector                               | Required. HTML selector where the plugin will be shown.                                            |
 | `username`             | username                               | Required. Garmin Connect username (Should be a public profile).                                    |
 | `data`                 | "activities", "statistics", "records"  | Required. The information to be shown.                                                             |
-
+| `display`              | "slider", "list"                       | Optional. Set the way the activities are shown. If omitted, default value is "list".               |
