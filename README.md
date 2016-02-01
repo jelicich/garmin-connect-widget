@@ -26,11 +26,15 @@ var obj = {
 
 GarminWidget.init(obj);
 ```
-`display`, `start` and `limit` values are not mandatory. If not set, their value will be "list", "1" and "5" respectively.
 
-| Property               | Values             |
-|------------------------|--------------------|
-| `display`              | "slider", "list"   |
+| Property               | Values                                 | Description                                                                                        |
+|------------------------|----------------------------------------|----------------------------------------------------------------------------------------------------|
+| `selector`             | selector                               | Required. HTML selector where the plugin will be shown.                                            |
+| `username`             | username                               | Required. Garmin Connect username (Should be a public profile).                                    |
+| `data`                 | "activities", "statistics", "records"  | Required. The information to be shown.                        .                                    |
+| `display`              | "slider", "list"                       | Optional. Set the way the activities are shown. If omitted, default value is "list".               |
+| `start`                | number                                 | Optional. The position where to start retrieving the activities. If omitted, default value is "1". |
+| `limit`                | number                                 | Optional. The number of activities to show. If omitted, default value is "5".                      |
 
 
 ### Showing Statistics
@@ -47,13 +51,16 @@ var obj = {
 
 GarminWidget.init(obj);
 ```
-`period` and `group` values are not mandatory. If not set, their value will be "monthly" and "false" respectively.
 
-| Property               | Values             |
-|------------------------|--------------------|
-| `display`              | "slider", "list"   |
-| `period`               | "monthly", "yearly"|
-| `group`                | `true`, `false`    |
+| Property               | Values                                 | Description                                                                                        |
+|------------------------|----------------------------------------|----------------------------------------------------------------------------------------------------|
+| `selector`             | selector                               | Required. HTML selector where the plugin will be shown.                                            |
+| `username`             | username                               | Required. Garmin Connect username (Should be a public profile).                                    |
+| `data`                 | "activities", "statistics", "records"  | Required. The information to be shown.                                                             |
+| `display`              | "slider", "list"                       | Optional. Set the way the activities are shown. If omitted, default value is "list".               |
+| `period`               | "monthly", "yearly"                    | Optional. Show statistics by month/year. If omitted, default value is "monthly".                   |
+| `group`                | "true", "false"                        | Optional. Group the statistics by activity type. If omitted, default value is "false".             |
+
 
 ### Showing Personal Records
 To show the personal records the object should be built like the following one:
@@ -66,4 +73,10 @@ var obj = {
 
 GarminWidget.init(obj);
 ```
+
+| Property               | Values                                 | Description                                                                                        |
+|------------------------|----------------------------------------|----------------------------------------------------------------------------------------------------|
+| `selector`             | selector                               | Required. HTML selector where the plugin will be shown.                                            |
+| `username`             | username                               | Required. Garmin Connect username (Should be a public profile).                                    |
+| `data`                 | "activities", "statistics", "records"  | Required. The information to be shown.                                                             |
 
