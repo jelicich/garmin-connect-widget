@@ -8,7 +8,7 @@ It is important that your Garmin Connect profile privacy is set to public, other
 # Usage
 To initialize the widget use the method:
 ``` javascript
-$('#container).garminWidget();
+$('#container').garminWidget();
 ```
 An object should be given to set the configuration, see the following examples:
 
@@ -23,7 +23,7 @@ var conf = {
 	limit : 3
 }
 
-$('#container).garminWidget(conf);
+$('#container').garminWidget(conf);
 ```
 
 | Property               | Values                                 | Description                                                                                        |
@@ -46,7 +46,7 @@ var conf = {
 	group : true
 }
 
-$('#container).garminWidget(conf);
+$('#container').garminWidget(conf);
 ```
 
 | Property               | Values                                 | Description                                                                                        |
@@ -66,7 +66,7 @@ var conf = {
 	data : 'records'
 }
 
-$('#container).garminWidget(conf);
+$('#container').garminWidget(conf);
 ```
 
 | Property               | Values                                 | Description                                                                                        |
