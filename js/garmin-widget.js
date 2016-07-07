@@ -86,6 +86,10 @@
 							// validation
 							break;
 
+						case 'graphic' :
+							// validation
+							break;
+
 						default:
 							console.log('Error: wrong data value');
 							result = false;
