@@ -3,6 +3,7 @@
 <head>
 	<title>Garmin Custom Widget</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script src="http://d3js.org/d3.v3.js"></script>
 	<script src="js/garmin-widget.js"></script>
 	<style type="text/css">
 		body,
@@ -41,7 +42,13 @@
 		var conf3 = {
 			username : 'ejelicich',
 			data : 'records',
-			display : 'slider'
+		}
+
+		var conf4 = {
+			username : 'ejelicich',
+			data : 'graphic',
+			width : 800,
+			height : 500
 		}
 		
 		$(document).ready(function(){
@@ -52,6 +59,8 @@
 
 			$('#container3').garminWidget(conf3); 
 
+			$('#container4').garminWidget(conf4);
+
 		})
 		
 	</script>
@@ -60,14 +69,17 @@
 
 <h1>Garmin Connect Widget</h1>
 
-<h2>Activities<h2>
+<h2>Activities</h2>
 <div id="container1"></div>
 
-<h2>Statistics<h2>
+<h2>Statistics</h2>
 <div id="container2"></div>
 
-<h2>Personal Records<h2>
+<h2>Personal Records</h2>
 <div id="container3"></div>
+
+<h2>Graphic</h2>
+<div id="container4"></div>
 
 </body>
 </html>

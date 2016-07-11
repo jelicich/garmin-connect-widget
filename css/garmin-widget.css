@@ -1,4 +1,4 @@
-#garmin-widget{
+.garmin-widget{
 	list-style: none;
     padding: 0px;
     background: rgba(255,255,255,0.8);
@@ -8,7 +8,7 @@
 	min-width: 200px;    
 }
 
-#garmin-widget .clearfix:after {
+.garmin-widget .clearfix:after {
 	visibility: hidden;
 	display: block;
 	font-size: 0;
@@ -17,29 +17,29 @@
 	height: 0;
 }
 
-#garmin-widget *{
+.garmin-widget *{
 	color: #A2A2A2;
 	box-sizing: border-box;
 }
 
-#garmin-widget li.activity-container {
+.garmin-widget li.activity-container {
     margin-bottom: 0px;
 }
 
-#garmin-widget li.activity-container:last-child {
+.garmin-widget li.activity-container:last-child {
     border-bottom: none;
 }
 
-#garmin-widget li.activity-container .activity-details{
+.garmin-widget li.activity-container .activity-details{
 	margin: 0;
 }
 
-#garmin-widget li.activity-container .title-container{
+.garmin-widget li.activity-container .title-container{
     padding: 10px;
     background: rgba(15, 214, 238, 1);
 }
 
-#garmin-widget li.activity-container .title-container h2{
+.garmin-widget li.activity-container .title-container h2{
 	font-size: 16px;
 	font-weight: normal;
 	margin: 0;
@@ -51,7 +51,7 @@
 	text-overflow: ellipsis;
 }
 
-#garmin-widget li.activity-container .title-container h3{
+.garmin-widget li.activity-container .title-container h3{
 	font-size: 11px;
 	font-weight: normal;
 	margin: 0;
@@ -59,33 +59,85 @@
 	color: #fff;
 }
 
-#garmin-widget li.activity-container ul{
+.garmin-widget li.activity-container ul{
     list-style: none;
     padding: 0 10px 10px;
 }
 
-#garmin-widget li.activity-container ul li{
+.garmin-widget li.activity-container ul li{
     float: left;
     padding-right: 10px;
     width: 50%;
 }
 
-#garmin-widget li.activity-container ul li dl{
+.garmin-widget li.activity-container ul li dl{
 	font-size: 11px;
 }
 
-#garmin-widget li.activity-container ul li dl dt{
+.garmin-widget li.activity-container ul li dl dt{
 	font-size: 11px;
 }
 
-#garmin-widget li.activity-container ul li dl dd{
+.garmin-widget li.activity-container ul li dl dd{
 	margin: 0 0 10px;
 	font-size: 16px;
 	color: #000;
 }
 
+.gw-error{
+    font-family: sans-serif;
+	color: red;
+	font-size: 12px;
+}
+
+/*graphic*/
+.garmin-widget.garmin-widget-graphic{
+	display: inline-block;
+	width: initial;
+	font-size: 10px;
+}
+ .garmin-widget.garmin-widget-graphic .y.axisRight text {
+	fill: rgba(0, 170, 190, 1);
+}
+.garmin-widget.garmin-widget-graphic .y.axisLeft text {
+	fill: rgba(114, 114, 114, 1);
+}
+.garmin-widget.garmin-widget-graphic .axis path,
+.garmin-widget.garmin-widget-graphic .axis line {
+	fill: none;
+	stroke: #000;
+	shape-rendering: crispEdges;
+	width: 1px
+}
+.garmin-widget.garmin-widget-graphic .bar1 {
+	fill: rgba(114, 114, 114, 1);
+}
+.garmin-widget.garmin-widget-graphic .bar2 {
+	fill: rgba(0, 170, 190, 1);
+}
+.garmin-widget.garmin-widget-graphic .x.axis path {
+	display: none;
+}
+.garmin-widget.garmin-widget-graphic .title-container{
+    padding: 10px;
+    background: rgba(15, 214, 238, 1);
+}
+
+.garmin-widget.garmin-widget-graphic .title-container h2{
+	font-size: 16px;
+	font-weight: normal;
+	margin: 0;
+	color: #fff;
+	text-transform: none;
+	width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+
 /* Slider */
-#garmin-widget-wrapper #slider-btn{
+.garmin-widget-wrapper .gw-slider-btn{
 	position: absolute;
 	top: 10px;
 	right: 10px;
@@ -99,8 +151,9 @@
 	cursor: pointer;
 }
 
-#garmin-widget-wrapper #slider-btn:hover{
+.garmin-widget-wrapper .gw-slider-btn:hover{
 	border: 1px solid rgba(255,255,255,0.7);
 	color: rgba(255,255,255,0.7);
 	background: rgba(255,255,255,0.34);
 }
+

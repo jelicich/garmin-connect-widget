@@ -11,6 +11,9 @@ class Garmin_Connect_Service{
 			        "verify_peer"=>false,
 			        "verify_peer_name"=>false,
 			    ),
+			    'http'=>array(
+			    	'header' => "User-Agent:MyAgent/1.0\r\n"
+			    )
 			);  
 
 			$json = file_get_contents($url, false, stream_context_create($arrContextOptions));

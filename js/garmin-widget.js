@@ -6,6 +6,7 @@
     Docs: -
     Repo: -
   Issues: -	
+  The graphic was based on @liufly project https://github.com/liufly/Dual-scale-D3-Bar-Chart
 */
 
 (function($){
@@ -25,8 +26,12 @@
 			limit : 5,
 			group : false,
 			period : 'monthly',
-			display : 'list'
+			display : 'list',
+			width : 900,
+			height : 400
 		};
+
+		base.config = {};
 
 		base.init = function(config){
 			if(base.validateConfig(config))
@@ -57,8 +62,8 @@
 					switch(config.data)
 					{
 						case 'activities' :
-							isStartValid = (typeof config.start == 'number' || typeof config.start == 'undefined');
-							isLimitValid = (typeof config.limit == 'number' || typeof config.limit == 'undefined');
+							var isStartValid = (typeof config.start == 'number' || typeof config.start == 'undefined');
+						    var isLimitValid = (typeof config.limit == 'number' || typeof config.limit == 'undefined');
 							if(!isStartValid || !isLimitValid)
 							{
 								console.log('Error: start and limit value should be a number');
@@ -87,7 +92,13 @@
 							break;
 
 						case 'graphic' :
-							// validation
+							var isWidthValid = (typeof config.width == 'number' || typeof config.width == 'undefined');
+							var isHeightValid = (typeof config.height == 'number' || typeof config.height == 'undefined');
+							if(!isWidthValid || !isHeightValid)
+							{
+								console.log('Error: width and height value should be a number');
+								result = false;
+							}
 							break;
 
 						default:
@@ -121,12 +132,13 @@
 
 		base.setConfig = function(config){
 			//base.selector = config.selector;
+			base.config = $.extend({}, base.defaults, config);
 			base.data = config.data;
 			switch(config.data){
 				case 'activities':
-					var start = (typeof config.start == 'undefined') ? base.defaults.start : config.start;
-					var limit = (typeof config.limit == 'undefined') ? base.defaults.limit : config.limit;
-					base.url = base.URL.ACTIVITIES + config.username + '?start=' + start + '&limit=' + limit;
+					var start = base.config.start;
+					var limit = base.config.limit;
+					base.url = base.URL.ACTIVITIES + base.config.username + '?start=' + start + '&limit=' + limit;
 					break;
 				
 				case 'statistics' :
@@ -137,6 +149,10 @@
 
 				case 'records' :
 					base.url = base.URL.RECORDS + config.username;
+					break; 
+
+				case 'graphic' :
+					base.url = base.URL.STATISTICS + 'monthly/' + base.config.username + '?ByParentType=true'
 					break;
 			} 
 			//slider config
@@ -159,16 +175,28 @@
 					url: base.url,
 				},
 				success: function(data) {
-					var json = JSON.parse(data);
-					t.printHTML(json);
+					try{
+						var json = JSON.parse(data);
+						t.printHTML(json);	
+					}catch(e){
+						var $error = $('<p>').html(e.message).addClass('gw-error');
+						var $response = $('<div>').html(data).addClass('gw-error');
+						base.append($error,$response).addClass('garmin-widget');
+					}
+					
 		    	}
 		    });		
 		};
 
 		base.printHTML = function(json){
+			if(base.data == 'graphic')
+			{
+				this.printGraphic(json);
+				return;
+			}
 
-			$wrapper = $('<div>').attr('id','garmin-widget-wrapper');
-	    	$ul = $('<ul>').attr('id','garmin-widget');
+			var $wrapper = $('<div>').addClass('garmin-widget-wrapper');
+	    	var $ul = $('<ul>').addClass('garmin-widget');
 	    	$wrapper.append($ul);
 
 	    	switch(base.data)
@@ -361,10 +389,10 @@
 		};
 
 		base.setSlider = function(){
-			var $wrapper = base.find('#garmin-widget-wrapper');
+			var $wrapper = base.find('.garmin-widget-wrapper');
 			$wrapper.css('position','relative');
 
-			var $gw = base.find('#garmin-widget');
+			var $gw = base.find('.garmin-widget');
 			$gw.addClass('clearfix');
 
 			var $li = $gw.children();
@@ -390,7 +418,7 @@
 			{
 				var $btn = $('<button>');
 				$btn.html('>');
-				$btn.attr('id','slider-btn');
+				$btn.addClass('gw-slider-btn');
 				$btn.click(slide);
 				$wrapper.append($btn);
 			}
@@ -415,6 +443,91 @@
 				}	
 			}
 		}
+
+		base.printGraphic = function(data){
+			var data = data.userMetrics.slice();
+			var margin = {top: 80, right: 80, bottom: 80, left: 80},
+			    width = parseInt(base.config.width) - margin.left - margin.right,
+			    height = parseInt(base.config.height) - margin.top - margin.bottom;
+
+			var x = d3.scale.ordinal()
+			    .rangeRoundBands([0, width], .1);
+
+			var y0 = d3.scale.linear().domain([300, 1100]).range([height, 0]),
+			    y1 = d3.scale.linear().domain([0, 500]).range([height, 0]);
+
+			var xAxis = d3.svg.axis()
+			    .scale(x)
+			    .orient("bottom");
+
+			// create left yAxis
+			var yAxisLeft = d3.svg.axis().scale(y0).ticks(4).orient("left");
+
+			// create right yAxis
+			var yAxisRight = d3.svg.axis().scale(y1).ticks(6).orient("right");
+
+			for(var i = 0; i < this.length; i++){
+				var container = this[i];
+				var $wrapper = $('<div>').addClass('garmin-widget-wrapper');
+				var $widget = $('<div>').addClass('garmin-widget').addClass('garmin-widget-graphic');
+				$wrapper.append($widget);
+				$(container).append($wrapper);
+				var svg = d3.select(container.firstChild.firstChild).append("svg")
+				    .attr("width", width + margin.left + margin.right)
+				    .attr("height", height + margin.top + margin.bottom)
+				  .append("g")
+				    .attr("class", "graph")
+				    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+				x.domain(data.map(function(d) { return d.month; }));
+				y0.domain([0, d3.max(data, function(d) { return d.totalActivities; })]);
+				y1.domain([0, d3.max(data, function(d) { return d.totalDistance / 1000; })]);
+				  
+				svg.append("g")
+				    .attr("class", "x axis")
+				    .attr("transform", "translate(0," + height + ")")
+				    .call(xAxis);
+				svg.append("g")
+				  .attr("class", "y axis axisLeft")
+				  .attr("transform", "translate(0,0)")
+				  .call(yAxisLeft)
+				.append("text")
+				  .attr("y", 6)
+				  .attr("dy", "-2em")
+				  .style("text-anchor", "end")
+				  .style("text-anchor", "end")
+				  .text("Activities");
+				  
+				svg.append("g")
+				  .attr("class", "y axis axisRight")
+				  .attr("transform", "translate(" + (width) + ",0)")
+				  .call(yAxisRight)
+				.append("text")
+				  .attr("y", 6)
+				  .attr("dy", "-2em")
+				  .attr("dx", "2em")
+				  .style("text-anchor", "end")
+				  .text("Distance (km)");
+
+				bars = svg.selectAll(".bar").data(data).enter();
+				bars.append("rect")
+				    .attr("class", "bar1")
+				    .attr("x", function(d) { return x(d.month); })
+				    .attr("width", x.rangeBand()/2)
+				    .attr("y", function(d) { return y0(d.totalActivities); })
+				  .attr("height", function(d,i,j) { return height - y0(d.totalActivities); }); 
+				bars.append("rect")
+				    .attr("class", "bar2")
+				    .attr("x", function(d) { return x(d.month) + x.rangeBand()/2; })
+				    .attr("width", x.rangeBand() / 2)
+				    .attr("y", function(d) { return y1(d.totalDistance/1000); })
+				  .attr("height", function(d,i,j) { return height - y1(d.totalDistance/1000); }); 
+
+				var $title = $('<div>').addClass('title-container').append($('<h2>').html('Activity Graph'));
+				$widget.prepend($title)
+			}
+				
+		}	
 
 		base.init(config);
 	}
