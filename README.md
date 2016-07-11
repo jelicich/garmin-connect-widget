@@ -78,6 +78,7 @@ $('#container').garminWidget(conf);
 
 ### Showing Activities / Distance graphic
 To show the graphic the object should be built like the following one:
+(In order to show the graphic you need to include the d3.js library https://d3js.org/)
 ``` javascript
 var conf = {
 	username : 'ejelicich',
