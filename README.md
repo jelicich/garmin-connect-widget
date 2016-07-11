@@ -29,7 +29,7 @@ $('#container').garminWidget(conf);
 | Property               | Values                                 | Description                                                                                        |
 |------------------------|----------------------------------------|----------------------------------------------------------------------------------------------------|
 | `username`             | username                               | Required. Garmin Connect username (Should be a public profile).                                    |
-| `data`                 | "activities", "statistics", "records"  | Required. The information to be shown.                        .                                    |
+| `data`                 | "activities", "statistics", "records", "graphic"  | Required. The information to be shown.                        .                                    |
 | `display`              | "slider", "list"                       | Optional. Set the way the activities are shown. If omitted, default value is "list".               |
 | `start`                | number                                 | Optional. The position where to start retrieving the activities. If omitted, default value is "1". |
 | `limit`                | number                                 | Optional. The number of activities to show. If omitted, default value is "5".                      |
@@ -52,7 +52,7 @@ $('#container').garminWidget(conf);
 | Property               | Values                                 | Description                                                                                        |
 |------------------------|----------------------------------------|----------------------------------------------------------------------------------------------------|
 | `username`             | username                               | Required. Garmin Connect username (Should be a public profile).                                    |
-| `data`                 | "activities", "statistics", "records"  | Required. The information to be shown.                                                             |
+| `data`                 | "activities", "statistics", "records", "graphic"  | Required. The information to be shown.                                                             |
 | `display`              | "slider", "list"                       | Optional. Set the way the activities are shown. If omitted, default value is "list".               |
 | `period`               | "monthly", "yearly"                    | Optional. Show statistics by month/year. If omitted, default value is "monthly".                   |
 | `group`                | "true", "false"                        | Optional. Group the statistics by activity type. If omitted, default value is "false".             |
@@ -71,7 +71,27 @@ $('#container').garminWidget(conf);
 
 | Property               | Values                                 | Description                                                                                        |
 |------------------------|----------------------------------------|----------------------------------------------------------------------------------------------------|
-| `selector`             | selector                               | Required. HTML selector where the plugin will be shown.                                            |
 | `username`             | username                               | Required. Garmin Connect username (Should be a public profile).                                    |
-| `data`                 | "activities", "statistics", "records"  | Required. The information to be shown.                                                             |
+| `data`                 | "activities", "statistics", "records", "graphic" | Required. The information to be shown.                                                             |
 | `display`              | "slider", "list"                       | Optional. Set the way the activities are shown. If omitted, default value is "list".               |
+
+
+### Showing Activities / Distance graphic
+To show the graphic the object should be built like the following one:
+``` javascript
+var conf = {
+	username : 'ejelicich',
+	data : 'graphic',
+	width : 1000,
+	height: 500,
+}
+
+$('#container').garminWidget(conf);
+```
+
+| Property               | Values                                 | Description                                                                                        |
+|------------------------|----------------------------------------|----------------------------------------------------------------------------------------------------|
+| `username`             | username                               | Required. Garmin Connect username (Should be a public profile).                                    |
+| `data`                 | "activities", "statistics", "records", "graphic"  | Required. The information to be shown.                                                             |
+| `width`                | number			                      | Optional. Set the width of the graphic. Default value is 900						               |
+| `height`               | number			                      | Optional. Set the height of the graphic. Default value is 400						               |
