@@ -394,6 +394,7 @@
 
 			var $gw = base.find('.garmin-widget');
 			$gw.addClass('clearfix');
+			$gw.addClass('garmin-widget-slider')
 
 			var $li = $gw.children();
 			var liHeight = $($li[0]).height() + 'px';
@@ -446,7 +447,8 @@
 
 		base.printGraphic = function(data){
 			var data = data.userMetrics.slice();
-			var margin = {top: 80, right: 80, bottom: 80, left: 80},
+			var m = parseInt(base.config.width) * 0.2;
+			var margin = {top: m, right: m, bottom: m, left: m},
 			    width = parseInt(base.config.width) - margin.left - margin.right,
 			    height = parseInt(base.config.height) - margin.top - margin.bottom;
 
@@ -483,15 +485,30 @@
 				y0.domain([0, d3.max(data, function(d) { return d.totalActivities; })]);
 				y1.domain([0, d3.max(data, function(d) { return d.totalDistance / 1000; })]);
 				  
-				svg.append("g")
+				var months = svg.append("g")
 				    .attr("class", "x axis")
 				    .attr("transform", "translate(0," + height + ")")
 				    .call(xAxis);
+				    
+				    //rotate tags for small size chart
+				    if(base.config.width < 850) {
+				    	months.selectAll('text')
+					    	.attr("y", function() {
+					    		var bbox = this.getBBox();
+            					var textHeight = bbox.height;
+            					return -textHeight /4;
+					    	})
+	    					.attr("x", -5)
+						    .attr("transform", "rotate(270)")
+		    				.style("text-anchor", "end");
+				    }
+				    
+
 				svg.append("g")
 				  .attr("class", "y axis axisLeft")
 				  .attr("transform", "translate(0,0)")
 				  .call(yAxisLeft)
-				.append("text")
+				  .append("text")
 				  .attr("y", 6)
 				  .attr("dy", "-2em")
 				  .style("text-anchor", "end")

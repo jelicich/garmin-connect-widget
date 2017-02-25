@@ -5,32 +5,105 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 	<script src="http://d3js.org/d3.v3.js"></script>
 	<script src="js/garmin-widget.js"></script>
+
+	<link href="https://fonts.googleapis.com/css?family=Raleway:400,700" rel="stylesheet">
+
 	<style type="text/css">
 		body,
 		html{
-			height: 100%;
 			color: #fff;
-			font-family: sans-serif;
+			font-family: 'Raleway', sans-serif;
+			min-height: 100vh;
 		}
 		body{
-			background: #000;
-			background: -webkit-radial-gradient(#f5f5f5, #000); 
-			background: -o-radial-gradient(#f5f5f5, #000); 
-			background: -moz-radial-gradient(#f5f5f5, #000); 
-			background: radial-gradient(#f5f5f5, #000); 
+			background: url('img/bg.jpg') no-repeat center;
+			background-size: cover;
 		}
 		h1{
 			text-align: center;
 		}
+		h1 a{
+			text-decoration: none;
+			color: #fff;
+		}
+		h1 a:hover,
+		h1 a:active,
+		h1 a:visited{
+			opacity: 0.8
+		}
+		h1 a img{
+			display: inline-block;
+			margin-left: 10px;
+			width: 30px;
+			height: 30px;
+		}
+		#wrapper{
+			position: relative;
+		}
+		#wrapper:after{
+			content: ' ';
+			display: table;
+			clear: both;
+		}
+		#widgets{
+			width: 600px;
+			right: 10vw;
+			margin-top: 50px;
+			position: absolute;
+		}
+		.col{
+			width: 48%;
+			margin-right: 4%;
+			float: left;
+		}
+		.col:last-child{
+			margin: 0;
+		}
+
 	</style>
 	<link rel="stylesheet" type="text/css" href="css/garmin-widget.css"/>
+
+</head>
+<body>
+	<div id="wrapper">
+		<div id="widgets">
+
+			<h1><a href="https://github.com/jelicich/garmin-connect-widget">Garmin Connect Widget <img alt="github" src="img/github-icon.png"></a></h1>
+
+			<div class="row">
+				<div class="col">
+					<h2>Latest activities</h2>
+					<div id="container1"></div>
+				</div>
+				
+				<div class="col">
+					<h2>Monthly Statistics</h2>
+					<div id="container2"></div>
+				</div>
+			</div>
+
+			
+			
+
+			<!--
+			<h2>Personal Records</h2>
+			<div id="container3"></div>
+			-->
+
+			<h2>Graphic</h2>
+			<div id="container4"></div>
+
+		</div>
+		
+	</div>
+
 	<script>
 		var conf1 = {
 			username : 'ejelicich',
 			data : 'activities',
 			start : 1,
-			limit : 3,
-			display : 'list'
+			limit : 4,
+			display : 'slider'
 		}
 
 		var conf2 = {
@@ -47,39 +120,24 @@
 		var conf4 = {
 			username : 'ejelicich',
 			data : 'graphic',
-			width : 800,
-			height : 500
+			width : $('#container4').width(),
+			//height : $('#container4').width() - $('#container4').width() * 0.2
+			//width: 850,
+			height: 400
 		}
-		
+
 		$(document).ready(function(){
 		
 			$('#container1').garminWidget(conf1); 
 
 			$('#container2').garminWidget(conf2); 
 
-			$('#container3').garminWidget(conf3); 
+			//$('#container3').garminWidget(conf3); 
 
 			$('#container4').garminWidget(conf4);
 
 		})
 		
 	</script>
-</head>
-<body>
-
-<h1>Garmin Connect Widget</h1>
-
-<h2>Activities</h2>
-<div id="container1"></div>
-
-<h2>Statistics</h2>
-<div id="container2"></div>
-
-<h2>Personal Records</h2>
-<div id="container3"></div>
-
-<h2>Graphic</h2>
-<div id="container4"></div>
-
 </body>
 </html>

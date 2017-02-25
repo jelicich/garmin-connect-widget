@@ -39,6 +39,10 @@
     background: rgba(15, 214, 238, 1);
 }
 
+.garmin-widget.garmin-widget-slider li.activity-container .title-container{
+	padding-right: 40px;
+}
+
 .garmin-widget li.activity-container .title-container h2{
 	font-size: 16px;
 	font-weight: normal;
