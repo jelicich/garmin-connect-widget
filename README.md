@@ -1,7 +1,7 @@
 # Garmin Connect Widget
 A jQuery plugin to load data from your Garmin profile using the web services provided by Garmin Connect
 
-This plugin uses what is left from what it used to be a free Garmin Connect Web API to load your statistics, activities and -personal records- into your own website. The data is retrieved using a custom web service through an ajax call.
+This plugin uses what is left from what it used to be a free Garmin Connect Web API to load your statistics, activities and personal records [Update: personal records are no longer available from the source] into your own website. The data is retrieved using a custom web service through an ajax call.
 
 It is important that your Garmin Connect profile privacy is set to public, otherwise the information won't be available.
 
